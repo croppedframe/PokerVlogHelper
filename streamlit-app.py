@@ -2,8 +2,8 @@ import streamlit as st
 import os
 
 # Define possible ranks and suits
-ranks = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11-JACK', '12-QUEEN', '13-KING']
-suits = ['CLUB', 'DIAMOND', 'HEART', 'SPADE']
+ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES']
 
 def card_selector(label):
     col1, col2 = st.columns(2)
@@ -13,13 +13,11 @@ def card_selector(label):
         rank = st.selectbox(f"{label} Rank", ranks, key=f"{label}_rank")
     return suit, rank
 
-def card_svg(suit, rank):
-    filename = f"{suit.upper()}-{rank}.svg"
-    filepath = os.path.join("CardVectors", filename)
+def card_png_path(suit, rank):
+    filename = f"{rank.lower()}_of_{suit.lower()}.png"
+    filepath = os.path.join("CardPNGs", filename)
     if os.path.exists(filepath):
-        with open(filepath, "r") as svg_file:
-            svg_content = svg_file.read()
-        return svg_content
+        return filepath
     else:
         return None
 
@@ -42,12 +40,12 @@ river = card_selector("River")
 
 # Display cards
 def display_card(label, suit, rank):
-    svg = card_svg(suit, rank)
-    if svg:
+    png_path = card_png_path(suit, rank)
+    if png_path:
         st.markdown(f"**{label}**", unsafe_allow_html=True)
-        st.components.v1.html(svg, height=140)
+        st.image(png_path, width=90)
     else:
-        st.warning(f"{label}: Card vector not found.")
+        st.warning(f"{label}: Card PNG not found.")
 
 st.subheader("Hand Display")
 
